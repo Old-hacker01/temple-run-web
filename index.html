@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Temple Run Python</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #game-container { width: 100vw; height: 100vh; }
+        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    </style>
+</head>
+<body>
+    <div id="loading">Loading Python runtime...</div>
+    <div id="game-container"></div>
+    <script>
+        async function main() {
+            let pyodide = await loadPyodide({
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/"
+            });
+            
+            document.getElementById('loading').style.display = 'none';
+            
+            // Load pygame and dependencies
+            await pyodide.loadPackage(["pygame"]);
+            
+            // Fetch game code
+            const response = await fetch('web_version.py');
+            const code = await response.text();
+            
+            // Run the game
+            await pyodide.runPythonAsync(code);
+        }
+        main();
+    </script>
+</body>
+</html>
